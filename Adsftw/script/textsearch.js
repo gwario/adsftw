@@ -69,7 +69,7 @@
     	var suffix = initSuffix( pattern );
     	
     	var i = -1;
-    	while(i < text.length - pattern.length) {
+    	while(i <= text.length - pattern.length) {
     		
     		var j = pattern.length - 1;
     		
