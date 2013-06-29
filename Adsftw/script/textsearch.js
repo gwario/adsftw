@@ -9,9 +9,25 @@
 
     //Public Property
 //    adsftw.ingredient = "Bacon Strips";
-
+	
+	/**
+	 * Logs the execution time of the given function with the give text and pattern.
+	 */
+	adsftw.measureExecutionDuration = function(func, text, pattern) {
+		
+		var start = +new Date();  // log start timestamp
+		var result = func( text, pattern );
+		var end =  +new Date();  // log end timestamp
+		var diff = end - start;
+		
+		console.log("execution took "+diff+"ms");
+		
+		return result;
+	};
+	
+	
     /**
-     * The algorithm introduced by knuth, morris and pratt for text search.
+     * The algorithm introduced by Knuth, Morris and Pratt for text search.
      * 
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
@@ -26,30 +42,30 @@
     
     function _kmp(text, pattern) {
         
-    	var occurences = [], j = 0;
+    	var occurrences = [], j = 0;
     	
     	var next = initNext( pattern );
     	
     	for(var i = 0; i < text.length; i++) {
     		
-    		while(j >= 0 && pattern.charAt(j) !== text.charAt(i))
+    		while(j > 0 && pattern.charAt(j) !== text.charAt(i))
     			j = next[j];
     		
     		if(pattern.charAt(j) === text.charAt(i))
     			j++;
     		
     		if(j === pattern.length - 1) {
-    			occurences.push(i - j + 1);
+    			occurrences.push(i - j + 1);
     			j = next[j];
     		}
     	}
     	
-        return occurences;
+        return occurrences;
     };
 
     
     /**
-     * The algorithm introduced by boyer and moore for text search.
+     * The algorithm introduced by Boyer and Moore for text search.
      * 
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
@@ -63,8 +79,8 @@
     };
     
     function _bm(text, pattern) {
-        //TODO bugged...
-    	var occurences = [];
+        
+    	var occurrences = [];
     	var last = initLast( pattern );
     	var suffix = initSuffix( pattern );
     	
@@ -77,7 +93,7 @@
     			j--;
     		
     		if(j === -1) {
-    			occurences.push(i);
+    			occurrences.push(i);
     			i += suffix[0];
     		}
     		else {
@@ -85,7 +101,7 @@
     		}
     	}
     	
-        return occurences;
+        return occurrences;
     };
     
     
@@ -154,5 +170,106 @@
     	return next;
     };
     
+    
+	
+	/**
+	 * The signature based algorithm introduced by karp and rabin for text search.
+	 * 
+	 * @param string text a string containing the text.
+     * @param string pattern the pattern to be looked for in text.
+     */
+	adsftw.kr = function(text, pattern) {
+		
+		if(typeof text !== 'string' || typeof pattern !== 'string')
+			throw new TypeError("need strings!");
+    	else
+    		return _kr( text, pattern );
+	};
+	
+	function _kr(text, pattern) {
+		
+		var occurrences = [];
+		
+		var hPattern = new KRHasher( pattern ).getHash();
+		
+		for(var i = 0, hasher = new KRHasher( text.substring(0, pattern.length) ); i < text.length - pattern.length + 1; hasher.addChar(text.charAt(pattern.length + i++))) {
+			
+			var hTextWindow = hasher.getHash();
+			
+			console.log("h(pattern   )="+hPattern+" ("+pattern+")");
+			console.log("h(text slice)="+hTextWindow+" ("+hasher.getText()+")");
+			
+			if(hTextWindow === hPattern) {
+				
+				var k = 0;
+				while(k < pattern.length && pattern.charAt(k) === text.charAt(i+k)) {
+					k++;console.log("i:"+i+", k:"+k);
+				}
+			
+				if(k === pattern.length)
+					occurrences.push(i);
+			}
+			
+		}
+		
+		return occurrences;
+	};
+	
+	/**
+	 * Holds the hash value of a text.
+	 * 
+	 * Allows incremental hashing as introduced by Karp and Rabin.
+	 */
+	function KRHasher(initialText) {
+		
+		console.log("Initial text: "+initialText);
+		
+		//not quiet sure it those are good values for a and n...
+		var a = 25;
+		var n = 977;//the longer the pattern the higher must get that number
+		
+		var hash = 0;
+		var text = initialText;
+		
+		//initil calculation
+		var i = 0;
+		while(i < initialText.length) {
+			hash = (hash * a) % n;
+			hash = (hash + text.charCodeAt(i++)) % n;
+		}
+		console.log("Initial hash: "+hash);
+		
+		/**
+		 * Adds a new character to the hash value.
+		 */
+		this.addChar = function(char) {
+			
+			//remove previous first term
+			hash -= text.charCodeAt(0) * (Math.pow(a, text.length - 1) % n);
+			
+			//update text - remove the first char and add the new one
+			text = text.substring(1) + char;
+			
+			//update hash
+			hash = (hash * a) % n;
+			hash = (hash + char.charCodeAt(0)) % n;
+		};
+		
+		/**
+		 * Returns the current hash value.
+		 */
+		this.getHash = function() {
+			
+			return hash;
+		};
+		
+		/**
+		 * Returns the current text.
+		 */
+		this.getText = function() {
+			
+			return text;
+		};
+	};
     
 }( window.adsftw = window.adsftw || {} ));
