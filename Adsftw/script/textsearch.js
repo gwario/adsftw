@@ -28,7 +28,7 @@
 	
     /**
      * The algorithm introduced by Knuth, Morris and Pratt for text search.
-     * 
+     * TODO still bugged...
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
      */

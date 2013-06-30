@@ -49477,32 +49477,27 @@ ukug.uk.FreeBSD.org Forwarding &lt;ukfreebsd@uk.FreeBSD.org&gt; Lee Johnston &lt
 		<script type="text/javascript">
 		jQuery(function() {
 		//perform text search
-		var occurrences0 = adsftw.executionDuration(adsftw.bm, jQuery('#fbsd-hb').text(), 'IBM');
-		var occurrences1 = adsftw.executionDuration(adsftw.kmp, jQuery('#fbsd-hb').text(), 'IBM');
-		var occurrences2 = adsftw.executionDuration(adsftw.kr, jQuery('#fbsd-hb').text(), 'IBM');
-		var occurrences3 = adsftw.executionDuration(getIndicesOf, jQuery('#fbsd-hb').text(), 'IBM');
+		var occurrences0 = adsftw.executionDuration(adsftw.bm, jQuery('#fbsd-hb').text(), 'System');
+		var occurrences1 = adsftw.executionDuration(adsftw.kmp, jQuery('#fbsd-hb').text(), 'System');
+		var occurrences2 = adsftw.executionDuration(adsftw.kr, jQuery('#fbsd-hb').text(), 'System');
+		var occurrences3 = adsftw.executionDuration(getIndicesOf, jQuery('#fbsd-hb').text(), 'System');
 		console.log(occurrences0);
 		console.log(occurrences1);
 		console.log(occurrences2);
 		console.log(occurrences3);
 		jQuery('#result').append('<p><span>Text length: </span>'+jQuery('#fbsd-hb').text().length+'</p>');
 		jQuery('#result').append('<p class="bm "><span>Boyer-Moore: </span>'+occurrences0+'</p>');
-		jQuery('#result').append('<p class="kmp"><span>Knuth-Morris-Pratt</span>'+occurrences1+'</p>');
-		jQuery('#result').append('<p class="kr "><span>Karp-Rabin(wo KRhash)</span>'+occurrences2+'</p>');
-		jQuery('#result').append('<p class="rex"><span>Regex</span>'+occurrences3+'</p>');
+		jQuery('#result').append('<p class="kmp"><span>Knuth-Morris-Pratt: </span>'+occurrences1+'</p>');
+		jQuery('#result').append('<p class="kr "><span>Karp-Rabin(wo KRhash): </span>'+occurrences2+'</p>');
+		jQuery('#result').append('<p class="rex"><span>Regex: </span>'+occurrences3+'</p>');
 
 
 		function getIndicesOf(str, searchStr) {
-		    var caseSensitive = true;
 		    var startIndex = 0, searchStrLen = searchStr.length;
 		    var index, indices = [];
-		    if (!caseSensitive) {
-			str = str.toLowerCase();
-			searchStr = searchStr.toLowerCase();
-		    }
 		    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
 			indices.push(index);
-			startIndex = index + searchStrLen;
+			startIndex = ++index;
 		    }
 		    return indices;
 		}
