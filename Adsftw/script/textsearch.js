@@ -66,7 +66,7 @@
     
     /**
      * The algorithm introduced by Boyer and Moore for text search.
-     * TODO bugged
+     * 
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
      */
