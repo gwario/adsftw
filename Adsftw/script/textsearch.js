@@ -1,6 +1,6 @@
 /**
  * Implementations of algorithm for text search.
- * 
+ * https://en.wikipedia.org/wiki/Rolling_hash
  * NOTE: These implementations may not be unicode aware!
  */
 (function( adsftw, undefined ) {
@@ -13,7 +13,7 @@
 	/**
 	 * Logs the execution time of the given function with the give text and pattern.
 	 */
-	adsftw.measureExecutionDuration = function(func, text, pattern) {
+	adsftw.executionDuration = function(func, text, pattern) {
 		
 		var start = +new Date();  // log start timestamp
 		var result = func( text, pattern );
@@ -66,7 +66,7 @@
     
     /**
      * The algorithm introduced by Boyer and Moore for text search.
-     * 
+     * TODO bugged
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
      */
@@ -190,21 +190,17 @@
 		
 		var occurrences = [];
 		
-		var hPattern = new KRHasher( pattern ).getHash();
+		var hPattern = new CPHasher( pattern ).getHash();
 		
-		for(var i = 0, hasher = new KRHasher( text.substring(0, pattern.length) ); i < text.length - pattern.length + 1; hasher.addChar(text.charAt(pattern.length + i++))) {
+		for(var i = 0, hasher = new CPHasher( text.substring(0, pattern.length) ); i < text.length - pattern.length + 1; hasher.addChar(text.charAt(pattern.length + i++))) {
 			
 			var hTextWindow = hasher.getHash();
-			
-			console.log("h(pattern   )="+hPattern+" ("+pattern+")");
-			console.log("h(text slice)="+hTextWindow+" ("+hasher.getText()+")");
 			
 			if(hTextWindow === hPattern) {
 				
 				var k = 0;
-				while(k < pattern.length && pattern.charAt(k) === text.charAt(i+k)) {
-					k++;console.log("i:"+i+", k:"+k);
-				}
+				while(k < pattern.length && pattern.charAt(k) === text.charAt(i+k))
+					k++;
 			
 				if(k === pattern.length)
 					occurrences.push(i);
@@ -216,17 +212,88 @@
 	};
 	
 	/**
+	 * Shifts a in binary representation b (< 32) bits to the left,
+	 * shifting in the shifted out bits.
+	 */
+	function circularShiftRight(a, b) {
+		
+		if(b < 0)
+			throw new RangeError("b must be positive or zero!");
+		while(b-- > 0) {
+			
+			var x = a & 0x1;
+			//a:   aaaaaaaabbbbbbbbbbbbbbbbbbbbbbbb
+			//  &  00000000000000000000000000000001
+			//x:   0000000000000000000000000000000b
+			
+			x <<= 31;
+			//x:   b0000000000000000000000000000000
+			
+			a >>>= 1;
+			//a:   0aaaaaaaabbbbbbbbbbbbbbbbbbbbbbb
+			
+			a |= x;
+			//a:   0aaaaaaaabbbbbbbbbbbbbbbbbbbbbbb
+			//   | b0000000000000000000000000000000
+			//a:   baaaaaaaabbbbbbbbbbbbbbbbbbbbbbb
+		}
+		
+		return a;
+	}
+	
+	/**
 	 * Holds the hash value of a text.
+	 * 
+	 * Allows incremental hashing with cyclic polynomial (buzhash).
+	 */
+	function CPHasher(initialText) {
+		
+		var hash = 0x0;
+		var text = initialText;
+		
+		for(var k = text.length, i = 0; 0 < k; k--) {
+			
+			hash ^= circularShiftRight(text.charCodeAt(i++), k - 1);
+		}
+		
+		/**
+		 * Adds a new character to the hash value.
+		 */
+		this.addChar = function(char) {
+			hash = circularShiftRight(hash, 1);
+			hash ^= circularShiftRight(text.charCodeAt(0), text.length);
+			hash ^= char.charCodeAt(0);
+			text = text.substring(1) + char;//update text
+		};
+		
+		/**
+		 * Returns the current hash value.
+		 */
+		this.getHash = function() {
+			
+			return hash;
+		};
+		
+		/**
+		 * Returns the current text.
+		 */
+		this.getText = function() {
+			
+			return text;
+		};
+	}
+	
+	
+	/**
+	 * Holds the hash value of a text.
+	 * TODO Bugged for a > 1....
 	 * 
 	 * Allows incremental hashing as introduced by Karp and Rabin.
 	 */
 	function KRHasher(initialText) {
 		
-		console.log("Initial text: "+initialText);
-		
-		//not quiet sure it those are good values for a and n...
-		var a = 25;
-		var n = 977;//the longer the pattern the higher must get that number
+		var a = 1;//damn higher factors do not work cause integer overflow....
+		var n = 1664525;
 		
 		var hash = 0;
 		var text = initialText;
@@ -234,25 +301,27 @@
 		//initil calculation
 		var i = 0;
 		while(i < initialText.length) {
-			hash = (hash * a) % n;
-			hash = (hash + text.charCodeAt(i++)) % n;
+			hash *= a;
+			hash %= n;
+			hash += text.charCodeAt(i++);
+			hash %= n;
 		}
-		console.log("Initial hash: "+hash);
 		
 		/**
 		 * Adds a new character to the hash value.
 		 */
 		this.addChar = function(char) {
-			
 			//remove previous first term
-			hash -= text.charCodeAt(0) * (Math.pow(a, text.length - 1) % n);
+			hash -= text.charCodeAt(0) * Math.pow(a, text.length - 1);
 			
 			//update text - remove the first char and add the new one
 			text = text.substring(1) + char;
 			
 			//update hash
-			hash = (hash * a) % n;
-			hash = (hash + char.charCodeAt(0)) % n;
+			hash *= a;
+			hash %= n;
+			hash += char.charCodeAt(0);
+			hash %= n;
 		};
 		
 		/**
