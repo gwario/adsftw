@@ -49486,10 +49486,10 @@ ukug.uk.FreeBSD.org Forwarding &lt;ukfreebsd@uk.FreeBSD.org&gt; Lee Johnston &lt
 		console.log(occurrences2);
 		console.log(occurrences3);
 		jQuery('#result').append('<p><span>Text length: </span>'+jQuery('#fbsd-hb').text().length+'</p>');
-		jQuery('#result').append('<p class="bm "><span>Boyer-Moore: </span>'+occurrences0+'</p>');
-		jQuery('#result').append('<p class="kmp"><span>Knuth-Morris-Pratt: </span>'+occurrences1+'</p>');
-		jQuery('#result').append('<p class="kr "><span>Karp-Rabin(wo KRhash): </span>'+occurrences2+'</p>');
-		jQuery('#result').append('<p class="rex"><span>Regex: </span>'+occurrences3+'</p>');
+		jQuery('#result').append('<p class="bm "><span>Boyer-Moore: ('+occurrences0.length+') </span>'+occurrences0+'</p>');
+		jQuery('#result').append('<p class="kmp"><span>Knuth-Morris-Pratt: ('+occurrences1.length+') </span>'+occurrences1+'</p>');
+		jQuery('#result').append('<p class="kr "><span>Karp-Rabin(wo KRhash): ('+occurrences2.length+') </span>'+occurrences2+'</p>');
+		jQuery('#result').append('<p class="rex"><span>Regex: ('+occurrences3.length+') </span>'+occurrences3+'</p>');
 
 
 		function getIndicesOf(str, searchStr) {

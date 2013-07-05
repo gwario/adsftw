@@ -42,20 +42,20 @@
     
     function _kmp(text, pattern) {
         
-    	var occurrences = [], j = -1;
+    	var occurrences = [], j = 0;
     	
     	var next = initNext( pattern );
     	
     	for(var i = 0; i < text.length; i++) {
     		
-    		while(j > 0 && pattern.charAt(j + 1) !== text.charAt(i))
-    			j = next[j];
+    		while(j > 0 && pattern.charAt(j) !== text.charAt(i))
+    			j = next[j+1];
     		
-    		if(pattern.charAt(j + 1) === text.charAt(i))
+    		if(pattern.charAt(j) === text.charAt(i))
     			j++;
     		
     		if(j === pattern.length - 1) {
-    			occurrences.push(i - j);
+    			occurrences.push(i - j + 1);
     			j = next[j];
     		}
     	}
