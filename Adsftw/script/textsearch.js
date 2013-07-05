@@ -1,14 +1,9 @@
 /**
  * Implementations of algorithm for text search.
- * https://en.wikipedia.org/wiki/Rolling_hash
+ * 
  * NOTE: These implementations may not be unicode aware!
  */
 (function( adsftw, undefined ) {
-    //Private Property
-//    var isHot = true;
-
-    //Public Property
-//    adsftw.ingredient = "Bacon Strips";
 	
 	/**
 	 * Logs the execution time of the given function with the give text and pattern.
@@ -28,16 +23,16 @@
 	
     /**
      * The algorithm introduced by Knuth, Morris and Pratt for text search.
-     * TODO still bugged...
+     * 
      * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
      */
     adsftw.kmp = function(text, pattern) {
     	
-    	if(typeof text !== 'string' || typeof pattern !== 'string')
-			throw new TypeError("need strings!");
-    	else
+    	if(typeof text === 'string' && typeof pattern === 'string')
     		return _kmp( text, pattern );
+    	else
+    		throw new TypeError("need strings!");
     };
     
     function _kmp(text, pattern) {
@@ -72,10 +67,10 @@
      */
     adsftw.bm = function(text, pattern) {
     	
-    	if(typeof text !== 'string' || typeof pattern !== 'string')
-			throw new TypeError("need strings!");
-    	else
+    	if(typeof text === 'string' && typeof pattern === 'string')
     		return _bm( text, pattern );
+    	else
+    		throw new TypeError("need strings!");
     };
     
     function _bm(text, pattern) {
@@ -173,17 +168,17 @@
     
 	
 	/**
-	 * The signature based algorithm introduced by karp and rabin for text search.
-	 * 
+	 * The signature based algorithm introduced by karp and rabin for text search but using the cyclic polynomial hash algorithm.
+	 * https://en.wikipedia.org/wiki/Rolling_hash
 	 * @param string text a string containing the text.
      * @param string pattern the pattern to be looked for in text.
      */
 	adsftw.kr = function(text, pattern) {
 		
-		if(typeof text !== 'string' || typeof pattern !== 'string')
-			throw new TypeError("need strings!");
+		if(typeof text === 'string' && typeof pattern === 'string')
+			return _kr( text, pattern );
     	else
-    		return _kr( text, pattern );
+    		throw new TypeError("need strings!");
 	};
 	
 	function _kr(text, pattern) {
