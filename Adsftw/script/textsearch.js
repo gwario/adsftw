@@ -5,22 +5,6 @@
  */
 (function( adsftw, undefined ) {
 	
-	/**
-	 * Logs the execution time of the given function with the give text and pattern.
-	 */
-	adsftw.executionDuration = function(func, text, pattern) {
-		
-		var start = +new Date();  // log start timestamp
-		var result = func( text, pattern );
-		var end =  +new Date();  // log end timestamp
-		var diff = end - start;
-		
-		console.log("execution took "+diff+"ms");
-		
-		return result;
-	};
-	
-	
     /**
      * The algorithm introduced by Knuth, Morris and Pratt for text search.
      * 

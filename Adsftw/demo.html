@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		
+		<script src="script/utility.js"></script>
 		<script src="script/textsearch.js"></script>
 		<script src="script/primetest.js"></script>
 		
@@ -49477,31 +49477,50 @@ ukug.uk.FreeBSD.org Forwarding &lt;ukfreebsd@uk.FreeBSD.org&gt; Lee Johnston &lt
 		
 		<script type="text/javascript">
 		jQuery(function() {
-		//perform text search
-		var occurrences0 = adsftw.executionDuration(adsftw.bm, jQuery('#fbsd-hb').text(), 'System');
-		var occurrences1 = adsftw.executionDuration(adsftw.kmp, jQuery('#fbsd-hb').text(), 'System');
-		var occurrences2 = adsftw.executionDuration(adsftw.kr, jQuery('#fbsd-hb').text(), 'System');
-		var occurrences3 = adsftw.executionDuration(getIndicesOf, jQuery('#fbsd-hb').text(), 'System');
-		console.log(occurrences0);
-		console.log(occurrences1);
-		console.log(occurrences2);
-		console.log(occurrences3);
-		jQuery('#result').append('<p><span>Text length: </span>'+jQuery('#fbsd-hb').text().length+'</p>');
-		jQuery('#result').append('<p class="bm "><span>Boyer-Moore: ('+occurrences0.length+') </span>'+occurrences0+'</p>');
-		jQuery('#result').append('<p class="kmp"><span>Knuth-Morris-Pratt: ('+occurrences1.length+') </span>'+occurrences1+'</p>');
-		jQuery('#result').append('<p class="kr "><span>Karp-Rabin(wo KRhash): ('+occurrences2.length+') </span>'+occurrences2+'</p>');
-		jQuery('#result').append('<p class="rex"><span>Regex: ('+occurrences3.length+') </span>'+occurrences3+'</p>');
+			//perform text search
+			var occurrences0 = adsftw.executionDuration(adsftw.bm, jQuery('#fbsd-hb').text(), 'System');
+			var occurrences1 = adsftw.executionDuration(adsftw.kmp, jQuery('#fbsd-hb').text(), 'System');
+			var occurrences2 = adsftw.executionDuration(adsftw.kr, jQuery('#fbsd-hb').text(), 'System');
+			var occurrences3 = adsftw.executionDuration(getIndicesOf, jQuery('#fbsd-hb').text(), 'System');
+			console.log(occurrences0.result);
+			console.log(occurrences1.result);
+			console.log(occurrences2.result);
+			console.log(occurrences3.result);
+			jQuery('#result').append('<p>Text length: '+jQuery('#fbsd-hb').text().length+'</p>');
+			jQuery('#result').append('<p class="bm ">Boyer-Moore: '+occurrences0.result.length+' matches, in '+occurrences0.duration+'ms</p>');
+			jQuery('#result').append('<p class="kmp">Knuth-Morris-Pratt: '+occurrences1.result.length+' matches, in '+occurrences1.duration+'ms</p>');
+			jQuery('#result').append('<p class="kr ">Karp-Rabin(wo KRhash): '+occurrences2.result.length+' matches, in '+occurrences2.duration+'ms</p>');
+			jQuery('#result').append('<p class="rex">Regex: '+occurrences3.result.length+' matches, in '+occurrences3.duration+'ms</p>');
 
 
-		function getIndicesOf(str, searchStr) {
-		    var startIndex = 0, searchStrLen = searchStr.length;
-		    var index, indices = [];
-		    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-			indices.push(index);
-			startIndex = ++index;
-		    }
-		    return indices;
-		}
+			function getIndicesOf(str, searchStr) {
+			    var startIndex = 0, searchStrLen = searchStr.length;
+			    var index, indices = [];
+			    while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+				indices.push(index);
+				startIndex = ++index;
+			    }
+			    return indices;
+			}
+
+			var prime0 = 5227;
+			var prime1 = 7919;
+			var prime2 = 461051;
+			var prime3 = 963241;
+			var nonprime0 = 12345678;
+			var nonprime1 = 22;
+			var nonprime2 = 78;
+			var carmichael0 = 62745;
+			var carmichael1 = 15330795481;
+			jQuery('#result').append('<p>'+prime0+' '+(adsftw.mr(prime0, 2) ? 'is primal' : function(){throw new Error(prime0+' was recognized as not primal...that is not true!');return "";}())+'</p>');
+			jQuery('#result').append('<p>'+prime1+' '+(adsftw.mr(prime1, 2) ? 'is primal' : function(){throw new Error(prime1+' was recognized as not primal...that is not true!');return "";}())+'</p>');
+			jQuery('#result').append('<p>'+prime2+' '+(adsftw.mr(prime2, 2) ? 'is primal' : function(){throw new Error(prime2+' was recognized as not primal...that is not true!');return "";}())+'</p>');
+			jQuery('#result').append('<p>'+prime3+' '+(adsftw.mr(prime3, 2) ? 'is primal' : function(){throw new Error(prime3+' was recognized as not primal...that is not true!');return "";}())+'</p>');
+			jQuery('#result').append('<p>'+nonprime0+' '+(adsftw.mr(nonprime0, 5) ? 'was recognized as primal but actualy is not (s=5)' : 'is not primal')+'</p>');
+			jQuery('#result').append('<p>'+nonprime1+' '+(adsftw.mr(nonprime1, 5) ? 'was recognized as primal but actualy is not (s=5)' : 'is not primal')+'</p>');
+			jQuery('#result').append('<p>'+nonprime2+' '+(adsftw.mr(nonprime2, 5) ? 'was recognized as primal but actualy is not (s=5)' : 'is not primal')+'</p>');
+			jQuery('#result').append('<p>'+carmichael0+' '+(adsftw.mr(carmichael0, 999) ? 'was recognized as primal but actualy is not (s=999)' : 'is not primal')+'</p>');
+			jQuery('#result').append('<p>'+carmichael1+' '+(adsftw.mr(carmichael1, 9) ? 'was recognized as primal but actualy is not (s=9)' : 'is not primal')+'</p>');
 
 
 		

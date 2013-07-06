@@ -22,7 +22,6 @@
 		
 		for(var i = 1, a = 0; i <= s; i++) {
 			a = 1 + Math.floor(Math.random() * number);// [1,number-1]
-			console.log("a: "+a);
 			if(witness(a, number))
 				return false;
 		}
