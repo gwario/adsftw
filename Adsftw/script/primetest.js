@@ -22,6 +22,7 @@
 		
 		for(var i = 1, a = 0; i <= s; i++) {
 			a = 1 + Math.floor(Math.random() * number);// [1,number-1]
+			console.log("a: "+a);
 			if(witness(a, number))
 				return false;
 		}
@@ -40,9 +41,9 @@
 		var b = (n - 1).toString(2);// binary form of n - 1
 		var d = 1;
 		
-		for(var k = b.length - 1; k >= 0; k--) {
+		for(var k = 0; k < b.length; k++) {
 			d = (d * d) % n;
-			if(b[k] === 1)
+			if(b[k] === '1') // since toString returns an array of strings...
 				d = (d * a) % n;
 		}
 		
