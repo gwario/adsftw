@@ -21,3 +21,19 @@
 	};
     
 }( window.adsftw = window.adsftw || {} ));
+
+/**
+ * Repeats the string num times.
+ * @param num
+ * @returns
+ */
+String.prototype.repeat = function(num) {
+	return new Array(num+1).join(this);
+};
+
+/**
+ * Returns true if the number is an integer and false if its Number.NaN or a floating point number
+ */
+Number.prototype.isInt = function() {
+	return parseFloat(this) == parseInt(this, 10) && !isNaN(this);
+};

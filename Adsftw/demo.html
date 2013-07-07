@@ -4,6 +4,7 @@
 		<script src="script/utility.js"></script>
 		<script src="script/textsearch.js"></script>
 		<script src="script/primetest.js"></script>
+		<script src="script/skiplist.js"></script>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 	</head>
@@ -49523,7 +49524,26 @@ ukug.uk.FreeBSD.org Forwarding &lt;ukfreebsd@uk.FreeBSD.org&gt; Lee Johnston &lt
 			jQuery('#result').append('<p>'+carmichael1+' '+(adsftw.mr(carmichael1, 9) ? 'was recognized as primal but actualy is not (s=9)' : 'is not primal')+'</p>');
 
 
-		
+			var L = new adsftw.Skiplist();
+			L.add(66);
+			L.add(23);
+			L.add(12);
+			L.add(33);
+			L.add(46);
+			L.add(99);
+			L.add(76);
+			L.add(100);
+			L.add(L.MIN_KEY()); //TODO ugly ugly ugly
+			L.add(L.MAX_KEY());
+			L.show();
+
+			L.remove(66);
+			L.remove(22);
+			L.remove(L.MAX_KEY());
+			L.show();
+
+			console.log('find(12): '+(L.find(12)!==null));
+			console.log('find(22): '+(L.find(22)!==null));
 		});
 		</script>
 	</body>
